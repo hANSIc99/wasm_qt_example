@@ -1,6 +1,13 @@
 import eventlet, random, os
 from eventlet import wsgi, websocket, tpool, greenthread
 
+
+
+def startTimer2(ws):
+    n_cnt = 0
+    ws.send('Timer fired! {}'.format(n_cnt))
+
+
 @websocket.WebSocketWSGI
 def startTimer(ws):
     n_cnt = 0
@@ -11,11 +18,17 @@ def startTimer(ws):
         if m is None:
             break
         """
-        #while True:
-        ws.send('Timer fired! {}'.format(n_cnt))
         greenthread.sleep(2)
         n_cnt+=1
 
+        try:
+            ws.send('Timer fired! {}'.format(n_cnt))
+        except Exception as e:
+            print('Client websocket not available')
+            ws.close()
+            return
+
+        
 """
 @websocket.WebSocketWSGI
 def handle(ws):
@@ -55,8 +68,8 @@ def dispatch(environ, start_response):
     if environ['PATH_INFO'] == '/data':
         print('PATH_INFO == \'/data\'')
         return saveData(environ, start_response)
-    elif environ['PATH_INFO'] == '/echo':
-        print('PATH_INFO == \'/echo\'')
+    elif environ['PATH_INFO'] == '/message':
+        print('PATH_INFO == \'/message\'')
         return handle(environ, start_response)
     elif environ['PATH_INFO'] == '/timer':
         print('PATH_INFO == \'/timer\'')
