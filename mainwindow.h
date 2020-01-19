@@ -8,7 +8,7 @@
 #include <QLabel>
 #include <QLineEdit>
 // HTTP available at wasm
-#define WASM true
+#define WASM 0
 
 #ifdef WASM
 //#include <QWebSocket>
@@ -25,7 +25,6 @@ public:
 
 private slots:
     void wsStartTimer();
-    void netFinished(QNetworkReply *data);
     void openFileBrowser();
     void fileOpenComplete(const QString &fileName, const QByteArray &data);
     void wsSendMsg();
@@ -33,7 +32,6 @@ private slots:
     void wsClosed();
     void wsTimerDisconnect();
     void wsTimerError(QAbstractSocket::SocketError error);
-    void wsSSLerror(const QList<QSslError> &errors);
     void wsOnTextMessageReceived(QString message);
 
 private:
@@ -45,6 +43,7 @@ private:
     QLabel      *m_timer_messages_lbl;
     QLineEdit   *m_input_message_edt;
     QWebSocket  m_websocket_timer;
+    QWebSocket  m_websocket_msg;
     QWebSocket  ws_uploadData;
     QNetworkAccessManager *net_mgr;
 };

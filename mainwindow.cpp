@@ -6,13 +6,13 @@
 #include <QObject>
 #include <QMetaEnum>
 
+
+
+
 #ifndef WASM
 #include <QNetworkAccessManager>
 #include <QHttpPart>
 #endif
-
-
-
 
 
 
@@ -21,13 +21,16 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
 {
     this->resize(500, 400);
-    net_mgr = new QNetworkAccessManager(this);
-    connect(net_mgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(netFinished(QNetworkReply*)));
-
+#ifndef WASM
+    qDebug() << "Compiled with WASM support";
+    new QNetworkAccessManager(this);
+    connect(net_mgr, &QNetworkAccessManager::finished, [](QNetworkReply *data){qDebug() << "POST finished: " << data;});
+#else
+    qDebug() << "Compiled without WASM support";
+#endif
     connect(&m_websocket_timer, &QWebSocket::connected, this, &MainWindow::wsOnConnected);
     connect(&m_websocket_timer, &QWebSocket::disconnected, this, &MainWindow::wsClosed);
     connect(&m_websocket_timer, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, &MainWindow::wsTimerError);
-    //connect(&m_webSocket, &QWebSocket::sslErrors, this, &MainWindow::wsSSLerror);
     connect(&m_websocket_timer, &QWebSocket::textMessageReceived, this, &MainWindow::wsOnTextMessageReceived);
 
     /*
@@ -55,7 +58,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(m_upload_file_btn, SIGNAL(released()), this, SLOT(openFileBrowser()) );
 
     /*
-     *  START TIMER 30 240
+     *  START TIMER
      */
 
     m_start_timer_btn = new QPushButton("Start Timer", this);
@@ -82,19 +85,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
 void MainWindow::wsStartTimer(){
     qDebug() << "MainWindow::wsStartTimer() called";
-    //QByteArray net_data("Hello");
-
-    //net_mgr->post(QNetworkRequest(QUrl("http://localhost:5000/test_1")), net_data);
-    //m_webSocket.sendTextMessage("Start Timer");
 
     QUrl ws_url(QStringLiteral("ws://localhost:7000/timer"));
     qDebug() << "Open Websocket:: " << ws_url.toString();
     m_websocket_timer.open(ws_url);
 
 }
-
-
-
 
 
 void MainWindow::openFileBrowser(){
@@ -110,7 +106,7 @@ void MainWindow::openFileBrowser(){
 
 
     auto fileOpenCompleted = [this](const QString &filePath, const QByteArray &fileContent) {
-        if (filePath.isEmpty()) {
+        if (filePath.isEmpty() && !m_websocket_msg.isValid()) {
             qDebug() << "No file was selected";
         } else {
             qDebug() << "Size of file: " << fileContent.size() / 1000 << "kb";
@@ -142,13 +138,8 @@ void MainWindow::openFileBrowser(){
     };
 
     QFileDialog::getOpenFileContent("", fileOpenCompleted);
-    //qDebug() <<  s_filename;
 }
 
-void MainWindow::netFinished(QNetworkReply *data){
-
-    qDebug() << "POST finished: " << data;
-}
 
 void MainWindow::fileOpenComplete(const QString &fileName, const QByteArray &data){
     qDebug() << "MainWindow::fileOpenComplete() called";
@@ -158,11 +149,26 @@ void MainWindow::fileOpenComplete(const QString &fileName, const QByteArray &dat
 
 void MainWindow::wsSendMsg()
 {
-    qDebug() << "MainWindow::connectWebSocket() called";
-    QUrl ws_url(QStringLiteral("ws://localhost:7000/timer"));
+    qDebug() << "MainWindow::wsSendMsg() called";
+    QUrl ws_url(QStringLiteral("ws://localhost:7000/message"));
     qDebug() << "Open ws URL: " << ws_url.toString();
-    m_websocket_timer.open(ws_url);
 
+
+
+    auto ws_opened = [this]() {
+        if(m_websocket_msg.isValid()){
+           qDebug() << "Send text to server: " << m_input_message_edt->text();
+           m_websocket_msg.sendTextMessage(m_input_message_edt->text());
+           m_websocket_msg.close(QWebSocketProtocol::CloseCodeNormal,"Operation complete - closed by client");
+        } else {
+            qDebug() << "Websocket is NOT valid" ;
+            m_websocket_msg.close(QWebSocketProtocol::CloseCodeAbnormalDisconnection,"Operation FAILED - closed");
+        }
+    };
+
+
+    connect(&m_websocket_msg, &QWebSocket::connected, ws_opened);
+    m_websocket_msg.open(ws_url);
 }
 
 void MainWindow::wsOnConnected()
@@ -189,10 +195,6 @@ void MainWindow::wsTimerError(QAbstractSocket::SocketError error)
     m_timer_messages_lbl->setText(metaEnum.valueToKey(error));
 }
 
-void MainWindow::wsSSLerror(const QList<QSslError> &errors)
-{
-    qDebug() << "SSL Error";
-}
 
 void MainWindow::wsOnTextMessageReceived(QString message)
 {

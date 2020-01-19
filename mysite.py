@@ -1,8 +1,6 @@
 import eventlet, random, os
 from eventlet import wsgi, websocket, tpool, greenthread
 
-
-
 def startTimer2(ws):
     n_cnt = 0
     ws.send('Timer fired! {}'.format(n_cnt))
@@ -28,7 +26,19 @@ def startTimer(ws):
             ws.close()
             return
 
-        
+@websocket.WebSocketWSGI
+def processMessage(ws):
+    """
+    while True:
+        m = ws.wait()
+        if m is None:
+            break
+        print('Message received: {}'.format(m))
+    """
+    m = ws.wait()
+    print('Message received: {}'.format(m))
+
+       
 """
 @websocket.WebSocketWSGI
 def handle(ws):
@@ -45,6 +55,7 @@ def handle(ws):
             ws.send('0 {} {}\n'.format(i, random.random()))
             eventlet.sleep(0.1)
 """
+
 @websocket.WebSocketWSGI
 def saveData(ws):
     filename = ws.wait()
@@ -70,7 +81,8 @@ def dispatch(environ, start_response):
         return saveData(environ, start_response)
     elif environ['PATH_INFO'] == '/message':
         print('PATH_INFO == \'/message\'')
-        return handle(environ, start_response)
+        #tpool.execute(process_message, environ, start_response)
+        return processMessage(environ, start_response)
     elif environ['PATH_INFO'] == '/timer':
         print('PATH_INFO == \'/timer\'')
         tpool.execute(startTimer, environ, start_response)
