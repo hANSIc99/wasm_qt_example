@@ -1,4 +1,4 @@
-import eventlet, random, os
+import eventlet, random, os, cgi
 from eventlet import wsgi, websocket, tpool, greenthread
 
 def startTimer2(ws):
@@ -86,6 +86,44 @@ def dispatch(environ, start_response):
     elif environ['PATH_INFO'] == '/timer':
         print('PATH_INFO == \'/timer\'')
         tpool.execute(startTimer, environ, start_response)
+        return
+
+    elif environ['PATH_INFO'] == '/upload':
+        print('PATH_INFO == \'/upload\'')
+        if environ['REQUEST_METHOD'].upper() != 'POST':
+            start_response('403 Forbidden', [])
+            return []
+        else:
+            print('POST detected')
+
+
+        """
+        post = cgi.FieldStorage(
+                fp=environ['wsgi.input'],
+                environ=environ,
+                keep_blank_values=True
+                )
+        #fileitem = post["userfile"]
+        """
+        """
+        if fileitem.file:
+            filename = fileitem.filename.decode('utf8').replace('\\','/').split('/')[-1].strip()
+            if not filename:
+                raise Exception('No valid filename specified')
+            print('Filename: {}'.format(filename))
+        """
+        try:
+            request_body_size = int(environ.get('CONTENT_LENGTH', 0))
+        except (ValueError):
+            request_body_size = 0
+
+        request_body = environ['wsgi.input'].read(request_body_size)
+        #data = environ['wsgi.input']
+        print(type(request_body))
+        print(environ)
+        with open('/home/stephan/testfile', 'wb') as file:
+            file.write(request_body)
+
         return
 
         """

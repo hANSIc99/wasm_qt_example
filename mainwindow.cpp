@@ -5,15 +5,8 @@
 #include <QFileDialog>
 #include <QObject>
 #include <QMetaEnum>
-
-
-
-
-#ifndef WASM
 #include <QNetworkAccessManager>
 #include <QHttpPart>
-#endif
-
 
 
 MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
@@ -21,13 +14,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
 {
     this->resize(500, 400);
-#ifndef WASM
-    qDebug() << "Compiled with WASM support";
-    new QNetworkAccessManager(this);
-    connect(net_mgr, &QNetworkAccessManager::finished, [](QNetworkReply *data){qDebug() << "POST finished: " << data;});
-#else
-    qDebug() << "Compiled without WASM support";
-#endif
+
     connect(&m_websocket_timer, &QWebSocket::connected, this, &MainWindow::wsOnConnected);
     connect(&m_websocket_timer, &QWebSocket::disconnected, this, &MainWindow::wsClosed);
     connect(&m_websocket_timer, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, &MainWindow::wsTimerError);
@@ -96,14 +83,13 @@ void MainWindow::wsStartTimer(){
 void MainWindow::openFileBrowser(){
     qDebug() << "MainWindow::openFileBrowser() called";
     QString s_homePath = QDir::homePath();
-    //QFileDialog::getOpenFileContent
 
-
+#if 0
     QUrl ws_url(QStringLiteral("ws://localhost:7000/data"));
     ws_uploadData.open(ws_url);
     connect(&ws_uploadData, &QWebSocket::connected, []{ qDebug() << "wsUplData_onConnected() called"; });
     connect(&ws_uploadData, &QWebSocket::disconnected, []{ qDebug() << "wsUplData_onClosed() called"; });
-
+#endif
 
     auto fileOpenCompleted = [this](const QString &filePath, const QByteArray &fileContent) {
         if (filePath.isEmpty() && !m_websocket_msg.isValid()) {
@@ -111,28 +97,30 @@ void MainWindow::openFileBrowser(){
         } else {
             qDebug() << "Size of file: " << fileContent.size() / 1000 << "kb";
             qDebug() << "Selected file: " << filePath;
-
-
             QFileInfo fileName(filePath);
+
+#if 0       // Websocket variant
             //QByteArray uploadData(fileName.fileName().toUtf8());
             ws_uploadData.sendTextMessage(fileName.fileName());
             ws_uploadData.sendBinaryMessage(fileContent);
-#ifndef WASM
+#else
+            // Alternative: HTTP Multipart POST
             QString content_header = QString("form-data; name=\"file\"; filename=\"%1\"").arg(fileName.fileName());
             QHttpPart fileDataPart;
             fileDataPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant(content_header));
             fileDataPart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("image/jpeg"));
             fileDataPart.setBody(fileContent);
 
-            QUrl url("http://localhost:5000/test");
+            QUrl url("http://localhost:7000/upload");
             QNetworkRequest qnet_req(url);
 
             QHttpMultiPart *multipart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
             multipart->append(fileDataPart);
-            QByteArray data(multipart->boundary());
+            //QByteArray data(multipart->boundary());
+            QByteArray data;
             data.append(fileContent);
-            net_mgr->post(qnet_req, data);
-            QNetworkReply *reply = net_mgr->post(qnet_req, multipart);
+            net_mgr.post(qnet_req, data);
+            //QNetworkReply *reply = net_mgr.post(qnet_req, multipart);
 #endif
         }
     };

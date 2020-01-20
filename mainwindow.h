@@ -7,13 +7,8 @@
 #include <QNetworkAccessManager>
 #include <QLabel>
 #include <QLineEdit>
-// HTTP available at wasm
-#define WASM 0
-
-#ifdef WASM
-//#include <QWebSocket>
 #include <QtWebSockets/QWebSocket>
-#endif
+
 
 class MainWindow : public QMainWindow
 {
@@ -45,6 +40,6 @@ private:
     QWebSocket  m_websocket_timer;
     QWebSocket  m_websocket_msg;
     QWebSocket  ws_uploadData;
-    QNetworkAccessManager *net_mgr;
+    QNetworkAccessManager net_mgr;
 };
 #endif // MAINWINDOW_H
