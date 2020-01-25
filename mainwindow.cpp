@@ -6,8 +6,9 @@
 #include <QObject>
 #include <QMetaEnum>
 #include <QNetworkAccessManager>
+#if 0
 #include <QHttpPart>
-
+#endif
 
 MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     : QMainWindow(parent, flags)
@@ -84,7 +85,7 @@ void MainWindow::openFileBrowser(){
     qDebug() << "MainWindow::openFileBrowser() called";
     QString s_homePath = QDir::homePath();
 
-#if 0
+#if 1
     QUrl ws_url(QStringLiteral("ws://localhost:7000/data"));
     ws_uploadData.open(ws_url);
     connect(&ws_uploadData, &QWebSocket::connected, []{ qDebug() << "wsUplData_onConnected() called"; });
@@ -99,7 +100,7 @@ void MainWindow::openFileBrowser(){
             qDebug() << "Selected file: " << filePath;
             QFileInfo fileName(filePath);
 
-#if 0       // Websocket variant
+#if 1       // Websocket variant
             //QByteArray uploadData(fileName.fileName().toUtf8());
             ws_uploadData.sendTextMessage(fileName.fileName());
             ws_uploadData.sendBinaryMessage(fileContent);
@@ -189,15 +190,3 @@ void MainWindow::wsOnTextMessageReceived(QString message)
     qDebug() << "MainWindow::wsOnTextMessageReceived: " << message;
     m_timer_messages_lbl->setText(message);
 }
-
-#if 0
-    QString path("/home/stephan/Dokumente/Pythonic/src/PythonicWeb/testdir/");
-    QDir dir; // Initialize to the desired dir if 'path' is relative
-          // By default the program's working directory "." is used.
-    // We create the directory if needed
-    if (!dir.exists(path))
-        dir.mkpath(path); // You can check the success if needed
-
-    QFile file(path + "NewFile.kml");
-    file.open(QIODevice::WriteOnly); // Or QIODevice::ReadWrite
-#endif

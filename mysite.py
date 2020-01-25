@@ -134,7 +134,7 @@ def dispatch(environ, start_response):
         print('PATH_INFO == \'/\'')
         start_response('200 OK', [('content-type', 'text/html')])
         return [open(os.path.join(os.path.dirname(__file__),
-            'mysite/templates/PythonicWeb.html')).read()]
+            'mysite/templates/WASM_Client.html')).read()]
    
     elif environ['PATH_INFO'] == '/qtloader.js':
         print('PATH_INFO == \'/qtloader.js\'')
@@ -153,18 +153,18 @@ def dispatch(environ, start_response):
 
         return [img_data]
 
-    elif environ['PATH_INFO'] == '/PythonicWeb.js':
-        print('PATH_INFO == \'/PythonicWeb.js\'')
+    elif environ['PATH_INFO'] == '/WASM_Client.js':
+        print('PATH_INFO == \'/WASM_Client.js\'')
         str_data = open(os.path.join(os.path.dirname(__file__),
-            'mysite/static/PythonicWeb.js')).read() 
+            'mysite/static/WASM_Client.js')).read() 
         #print('java script length: {}'.format(len(str_data)))
         start_response('200 OK', [('content-type', 'application/javascript')])
         return [str_data]
 
-    elif environ['PATH_INFO'] == '/PythonicWeb.wasm':
-        print('PATH_INFO == \'/PythonicWeb.wasm\'')
+    elif environ['PATH_INFO'] == '/WASM_Client.wasm':
+        print('PATH_INFO == \'/WASM_Client.wasm\'')
         bin_data = open(os.path.join(os.path.dirname(__file__),
-            'mysite/static/PythonicWeb.wasm'), 'rb').read() 
+            'mysite/static/WASM_Client.wasm'), 'rb').read() 
         start_response('200 OK', [('content-type', 'application/wasm')])
         return [bin_data]		
 
