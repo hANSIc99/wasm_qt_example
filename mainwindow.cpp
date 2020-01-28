@@ -6,20 +6,12 @@
 #include <QObject>
 #include <QMetaEnum>
 #include <QNetworkAccessManager>
-#if 0
-#include <QHttpPart>
-#endif
 
 MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     : QMainWindow(parent, flags)
 
 {
     this->resize(500, 400);
-
-    connect(&m_websocket_timer, &QWebSocket::connected, this, &MainWindow::wsOnConnected);
-    connect(&m_websocket_timer, &QWebSocket::disconnected, this, &MainWindow::wsClosed);
-    connect(&m_websocket_timer, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, &MainWindow::wsTimerError);
-    connect(&m_websocket_timer, &QWebSocket::textMessageReceived, this, &MainWindow::wsOnTextMessageReceived);
 
     /*
      * SEND MESSAGE
@@ -30,10 +22,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(m_websocket_connect_button, &QAbstractButton::released, this, &MainWindow::wsSendMsg );
 
     /*
-     * DISCONNECT WEBSOCKET
+     * DISCONNECT WEBSOCKET & STOP TIMER
      */
 
-    m_websocket_disconnect_button = new QPushButton("Disconnect Websocket", this);
+    m_websocket_disconnect_button = new QPushButton("Disconnect (Stop Timer)", this);
     m_websocket_disconnect_button->setGeometry((QRect(QPoint(30, 170), QSize(200, 50))));
     connect(m_websocket_disconnect_button, SIGNAL(released()), this, SLOT(wsTimerDisconnect()) );
 
@@ -68,6 +60,37 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     m_timer_messages_lbl = new QLabel("Messages from server timer", this);
     m_timer_messages_lbl->setGeometry(280, 110, 200, 30);
 
+    /*
+     * PREPARE WEBSOCKETS
+     */
+
+    /* TIMER */
+    connect(&m_ws_timer, &QWebSocket::connected, [] { qDebug() << "m_ws_timer connected() called";});
+    connect(&m_ws_timer, &QWebSocket::disconnected, [] { qDebug() << "m_ws_timer disconnected() called";});
+    connect(&m_ws_timer, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, &MainWindow::wsTimerError);
+    connect(&m_ws_timer, &QWebSocket::textMessageReceived, this, &MainWindow::wsOnTextMessageReceived);
+
+    /* SEND MESSAGE */
+
+    connect(&m_ws_msg, &QWebSocket::disconnected, [] { qDebug() << "m_ws_msg disconnected() called";});
+    auto ws_opened = [this]() {
+        if(m_ws_msg.isValid()){
+           qDebug() << "Send text to server: " << m_input_message_edt->text();
+           m_ws_msg.sendTextMessage(m_input_message_edt->text());
+           m_ws_msg.close(QWebSocketProtocol::CloseCodeNormal,"Operation complete - closed by client");
+        } else {
+            qDebug() << "Websocket is NOT valid" ;
+            m_ws_msg.close(QWebSocketProtocol::CloseCodeAbnormalDisconnection,"Operation FAILED - closed");
+        }
+    };
+
+    connect(&m_ws_msg, &QWebSocket::connected, ws_opened);
+
+    /* UPLOAD FILE */
+    connect(&m_ws_uploadData, &QWebSocket::connected, []{ qDebug() << "m_ws_uploadData connected() called"; });
+    connect(&m_ws_uploadData, &QWebSocket::disconnected, []{ qDebug() << "m_ws_uploadData closed() called"; });
+
+
 }
 
 
@@ -76,8 +99,7 @@ void MainWindow::wsStartTimer(){
 
     QUrl ws_url(QStringLiteral("ws://localhost:7000/timer"));
     qDebug() << "Open Websocket:: " << ws_url.toString();
-    m_websocket_timer.open(ws_url);
-
+    m_ws_timer.open(ws_url);
 }
 
 
@@ -85,44 +107,22 @@ void MainWindow::openFileBrowser(){
     qDebug() << "MainWindow::openFileBrowser() called";
     QString s_homePath = QDir::homePath();
 
-#if 1
     QUrl ws_url(QStringLiteral("ws://localhost:7000/data"));
-    ws_uploadData.open(ws_url);
-    connect(&ws_uploadData, &QWebSocket::connected, []{ qDebug() << "wsUplData_onConnected() called"; });
-    connect(&ws_uploadData, &QWebSocket::disconnected, []{ qDebug() << "wsUplData_onClosed() called"; });
-#endif
+    m_ws_uploadData.open(ws_url);
+
+
 
     auto fileOpenCompleted = [this](const QString &filePath, const QByteArray &fileContent) {
-        if (filePath.isEmpty() && !m_websocket_msg.isValid()) {
+        if (filePath.isEmpty() && !m_ws_msg.isValid()) {
             qDebug() << "No file was selected";
         } else {
             qDebug() << "Size of file: " << fileContent.size() / 1000 << "kb";
             qDebug() << "Selected file: " << filePath;
             QFileInfo fileName(filePath);
 
-#if 1       // Websocket variant
-            //QByteArray uploadData(fileName.fileName().toUtf8());
-            ws_uploadData.sendTextMessage(fileName.fileName());
-            ws_uploadData.sendBinaryMessage(fileContent);
-#else
-            // Alternative: HTTP Multipart POST
-            QString content_header = QString("form-data; name=\"file\"; filename=\"%1\"").arg(fileName.fileName());
-            QHttpPart fileDataPart;
-            fileDataPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant(content_header));
-            fileDataPart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("image/jpeg"));
-            fileDataPart.setBody(fileContent);
-
-            QUrl url("http://localhost:7000/upload");
-            QNetworkRequest qnet_req(url);
-
-            QHttpMultiPart *multipart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
-            multipart->append(fileDataPart);
-            //QByteArray data(multipart->boundary());
-            QByteArray data;
-            data.append(fileContent);
-            net_mgr.post(qnet_req, data);
-            //QNetworkReply *reply = net_mgr.post(qnet_req, multipart);
-#endif
+            m_ws_uploadData.sendTextMessage(fileName.fileName());
+            m_ws_uploadData.sendBinaryMessage(fileContent);
+            m_ws_uploadData.close(QWebSocketProtocol::CloseCodeNormal,"Job done");
         }
     };
 
@@ -132,6 +132,7 @@ void MainWindow::openFileBrowser(){
 
 void MainWindow::fileOpenComplete(const QString &fileName, const QByteArray &data){
     qDebug() << "MainWindow::fileOpenComplete() called";
+
     qDebug() << "Filename: " << fileName;
     qDebug() << "Size: " << data.size();
 }
@@ -139,41 +140,20 @@ void MainWindow::fileOpenComplete(const QString &fileName, const QByteArray &dat
 void MainWindow::wsSendMsg()
 {
     qDebug() << "MainWindow::wsSendMsg() called";
+
     QUrl ws_url(QStringLiteral("ws://localhost:7000/message"));
     qDebug() << "Open ws URL: " << ws_url.toString();
 
-
-
-    auto ws_opened = [this]() {
-        if(m_websocket_msg.isValid()){
-           qDebug() << "Send text to server: " << m_input_message_edt->text();
-           m_websocket_msg.sendTextMessage(m_input_message_edt->text());
-           m_websocket_msg.close(QWebSocketProtocol::CloseCodeNormal,"Operation complete - closed by client");
-        } else {
-            qDebug() << "Websocket is NOT valid" ;
-            m_websocket_msg.close(QWebSocketProtocol::CloseCodeAbnormalDisconnection,"Operation FAILED - closed");
-        }
-    };
-
-
-    connect(&m_websocket_msg, &QWebSocket::connected, ws_opened);
-    m_websocket_msg.open(ws_url);
+    m_ws_msg.open(ws_url);
 }
 
-void MainWindow::wsOnConnected()
-{
-    qDebug() << "MainWindow::wsOnConnected() called";
-}
-
-void MainWindow::wsClosed()
-{
-    qDebug() << "MainWindow::wsClosed() called";
-}
 
 void MainWindow::wsTimerDisconnect()
 {
-    qDebug() << "MainWindow::wsDisconnect() called";
-    m_websocket_timer.close(QWebSocketProtocol::CloseCodeNormal,"Closed by User");
+    qDebug() << "MainWindow::wsTimerDisconnect() called";
+
+    m_ws_timer.sendTextMessage("stopTimer");
+    m_ws_timer.close(QWebSocketProtocol::CloseCodeNormal,"Closed by User");
     m_timer_messages_lbl->setText("Disconnected");
 }
 

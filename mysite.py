@@ -1,21 +1,17 @@
 import eventlet, random, os, cgi
 from eventlet import wsgi, websocket, tpool, greenthread
 
+
 def startTimer2(ws):
     n_cnt = 0
     ws.send('Timer fired! {}'.format(n_cnt))
 
-
-@websocket.WebSocketWSGI
+#@websocket.WebSocketWSGI
 def startTimer(ws):
     n_cnt = 0
     while True:
         print('Timer fired! {}'.format(n_cnt))
-        """ waiting for messages
-        m = ws.wait()
-        if m is None:
-            break
-        """
+
         greenthread.sleep(2)
         n_cnt+=1
 
@@ -27,35 +23,20 @@ def startTimer(ws):
             return
 
 @websocket.WebSocketWSGI
+def stopTimer(ws):
+    startTimer(ws)
+    m = ws.wait()
+    if m is None:
+        print("None received")
+    else:
+        print('stopTimer() Message received: {}'.format(m))
+
+@websocket.WebSocketWSGI
 def processMessage(ws):
-    """
-    while True:
-        m = ws.wait()
-        if m is None:
-            break
-        print('Message received: {}'.format(m))
-    """
     m = ws.wait()
     print('Message received: {}'.format(m))
 
        
-"""
-@websocket.WebSocketWSGI
-def handle(ws):
-    if ws.path == '/echo':
-        print('WS == \'/echo\'')
-        while True:
-            m = ws.wait()
-            if m is None:
-                break
-            ws.send(m)
-    elif ws.path == '/data':
-        print('WS == \'/data\'')
-        for i in range (10):
-            ws.send('0 {} {}\n'.format(i, random.random()))
-            eventlet.sleep(0.1)
-"""
-
 @websocket.WebSocketWSGI
 def saveData(ws):
     filename = ws.wait()
@@ -85,46 +66,8 @@ def dispatch(environ, start_response):
         return processMessage(environ, start_response)
     elif environ['PATH_INFO'] == '/timer':
         print('PATH_INFO == \'/timer\'')
-        tpool.execute(startTimer, environ, start_response)
-        return
-
-    elif environ['PATH_INFO'] == '/upload':
-        print('PATH_INFO == \'/upload\'')
-        if environ['REQUEST_METHOD'].upper() != 'POST':
-            start_response('403 Forbidden', [])
-            return []
-        else:
-            print('POST detected')
-
-
-        """
-        post = cgi.FieldStorage(
-                fp=environ['wsgi.input'],
-                environ=environ,
-                keep_blank_values=True
-                )
-        #fileitem = post["userfile"]
-        """
-        """
-        if fileitem.file:
-            filename = fileitem.filename.decode('utf8').replace('\\','/').split('/')[-1].strip()
-            if not filename:
-                raise Exception('No valid filename specified')
-            print('Filename: {}'.format(filename))
-        """
-        try:
-            request_body_size = int(environ.get('CONTENT_LENGTH', 0))
-        except (ValueError):
-            request_body_size = 0
-
-        request_body = environ['wsgi.input'].read(request_body_size)
-        #data = environ['wsgi.input']
-        print(type(request_body))
-        print(environ)
-        with open('/home/stephan/testfile', 'wb') as file:
-            file.write(request_body)
-
-        return
+        #tpool.execute(startTimer, environ, start_response)
+        return stopTimer(environ, start_response)
 
         """
             STANDARD HTML ENDPOINTS
@@ -157,7 +100,6 @@ def dispatch(environ, start_response):
         print('PATH_INFO == \'/WASM_Client.js\'')
         str_data = open(os.path.join(os.path.dirname(__file__),
             'mysite/static/WASM_Client.js')).read() 
-        #print('java script length: {}'.format(len(str_data)))
         start_response('200 OK', [('content-type', 'application/javascript')])
         return [str_data]
 
@@ -178,4 +120,3 @@ if __name__ == '__main__':
     listener = eventlet.listen(('127.0.0.1', 7000))
     print('\nVisit http://localhost:7000/ in your websocket-capable browser.\n')
     wsgi.server(listener, dispatch)
-

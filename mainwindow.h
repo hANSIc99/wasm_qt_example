@@ -23,8 +23,6 @@ private slots:
     void openFileBrowser();
     void fileOpenComplete(const QString &fileName, const QByteArray &data);
     void wsSendMsg();
-    void wsOnConnected();
-    void wsClosed();
     void wsTimerDisconnect();
     void wsTimerError(QAbstractSocket::SocketError error);
     void wsOnTextMessageReceived(QString message);
@@ -37,9 +35,9 @@ private:
     QPushButton *m_websocket_disconnect_button;
     QLabel      *m_timer_messages_lbl;
     QLineEdit   *m_input_message_edt;
-    QWebSocket  m_websocket_timer;
-    QWebSocket  m_websocket_msg;
-    QWebSocket  ws_uploadData;
+    QWebSocket  m_ws_timer;
+    QWebSocket  m_ws_msg;
+    QWebSocket  m_ws_uploadData;
     QNetworkAccessManager net_mgr;
 };
 #endif // MAINWINDOW_H
