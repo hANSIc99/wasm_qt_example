@@ -671,35 +671,9 @@ moc_mainwindow.cpp: mainwindow.h \
 		../../Qt/5.13.1/wasm_32/include/QtGui/qtouchdevice.h \
 		../../Qt/5.13.1/wasm_32/include/QtWidgets/qtabwidget.h \
 		../../Qt/5.13.1/wasm_32/include/QtGui/qicon.h \
-		../../Qt/5.13.1/wasm_32/include/QtWidgets/QWidget \
 		../../Qt/5.13.1/wasm_32/include/QtWidgets/QPushButton \
 		../../Qt/5.13.1/wasm_32/include/QtWidgets/qpushbutton.h \
 		../../Qt/5.13.1/wasm_32/include/QtWidgets/qabstractbutton.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/QNetworkAccessManager \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qnetworkaccessmanager.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qtnetworkglobal.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qtnetwork-config.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qnetworkrequest.h \
-		../../Qt/5.13.1/wasm_32/include/QtCore/QSharedDataPointer \
-		../../Qt/5.13.1/wasm_32/include/QtCore/QString \
-		../../Qt/5.13.1/wasm_32/include/QtCore/QUrl \
-		../../Qt/5.13.1/wasm_32/include/QtCore/QVariant \
-		../../Qt/5.13.1/wasm_32/include/QtCore/QVector \
-		../../Qt/5.13.1/wasm_32/include/QtCore/QObject \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/QSslConfiguration \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qsslconfiguration.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qsslsocket.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qtcpsocket.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qabstractsocket.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qsslerror.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qsslcertificate.h \
-		../../Qt/5.13.1/wasm_32/include/QtCore/qcryptographichash.h \
-		../../Qt/5.13.1/wasm_32/include/QtCore/qdatetime.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qssl.h \
-		../../Qt/5.13.1/wasm_32/include/QtCore/QFlags \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/QSslPreSharedKeyAuthenticator \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qsslpresharedkeyauthenticator.h \
-		../../Qt/5.13.1/wasm_32/include/QtCore/QMetaType \
 		../../Qt/5.13.1/wasm_32/include/QtWidgets/QLabel \
 		../../Qt/5.13.1/wasm_32/include/QtWidgets/qlabel.h \
 		../../Qt/5.13.1/wasm_32/include/QtWidgets/qframe.h \
@@ -711,12 +685,30 @@ moc_mainwindow.cpp: mainwindow.h \
 		../../Qt/5.13.1/wasm_32/include/QtGui/qtextoption.h \
 		../../Qt/5.13.1/wasm_32/include/QtWebSockets/QWebSocket \
 		../../Qt/5.13.1/wasm_32/include/QtWebSockets/qwebsocket.h \
+		../../Qt/5.13.1/wasm_32/include/QtCore/QUrl \
 		../../Qt/5.13.1/wasm_32/include/QtNetwork/QAbstractSocket \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qabstractsocket.h \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qtnetworkglobal.h \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qtnetwork-config.h \
 		../../Qt/5.13.1/wasm_32/include/QtNetwork/QNetworkRequest \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qnetworkrequest.h \
+		../../Qt/5.13.1/wasm_32/include/QtCore/QSharedDataPointer \
+		../../Qt/5.13.1/wasm_32/include/QtCore/QString \
+		../../Qt/5.13.1/wasm_32/include/QtCore/QVariant \
 		../../Qt/5.13.1/wasm_32/include/QtNetwork/QNetworkProxy \
 		../../Qt/5.13.1/wasm_32/include/QtNetwork/qnetworkproxy.h \
 		../../Qt/5.13.1/wasm_32/include/QtNetwork/qhostaddress.h \
 		../../Qt/5.13.1/wasm_32/include/QtNetwork/QSslError \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qsslerror.h \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qsslcertificate.h \
+		../../Qt/5.13.1/wasm_32/include/QtCore/qcryptographichash.h \
+		../../Qt/5.13.1/wasm_32/include/QtCore/qdatetime.h \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qssl.h \
+		../../Qt/5.13.1/wasm_32/include/QtCore/QFlags \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/QSslConfiguration \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qsslconfiguration.h \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qsslsocket.h \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qtcpsocket.h \
 		../../Qt/5.13.1/wasm_32/include/QtWebSockets/qwebsockets_global.h \
 		../../Qt/5.13.1/wasm_32/include/QtWebSockets/qwebsocketprotocol.h \
 		moc_predefs.h \
@@ -846,35 +838,9 @@ main.o: main.cpp mainwindow.h \
 		../../Qt/5.13.1/wasm_32/include/QtGui/qtouchdevice.h \
 		../../Qt/5.13.1/wasm_32/include/QtWidgets/qtabwidget.h \
 		../../Qt/5.13.1/wasm_32/include/QtGui/qicon.h \
-		../../Qt/5.13.1/wasm_32/include/QtWidgets/QWidget \
 		../../Qt/5.13.1/wasm_32/include/QtWidgets/QPushButton \
 		../../Qt/5.13.1/wasm_32/include/QtWidgets/qpushbutton.h \
 		../../Qt/5.13.1/wasm_32/include/QtWidgets/qabstractbutton.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/QNetworkAccessManager \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qnetworkaccessmanager.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qtnetworkglobal.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qtnetwork-config.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qnetworkrequest.h \
-		../../Qt/5.13.1/wasm_32/include/QtCore/QSharedDataPointer \
-		../../Qt/5.13.1/wasm_32/include/QtCore/QString \
-		../../Qt/5.13.1/wasm_32/include/QtCore/QUrl \
-		../../Qt/5.13.1/wasm_32/include/QtCore/QVariant \
-		../../Qt/5.13.1/wasm_32/include/QtCore/QVector \
-		../../Qt/5.13.1/wasm_32/include/QtCore/QObject \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/QSslConfiguration \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qsslconfiguration.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qsslsocket.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qtcpsocket.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qabstractsocket.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qsslerror.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qsslcertificate.h \
-		../../Qt/5.13.1/wasm_32/include/QtCore/qcryptographichash.h \
-		../../Qt/5.13.1/wasm_32/include/QtCore/qdatetime.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qssl.h \
-		../../Qt/5.13.1/wasm_32/include/QtCore/QFlags \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/QSslPreSharedKeyAuthenticator \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qsslpresharedkeyauthenticator.h \
-		../../Qt/5.13.1/wasm_32/include/QtCore/QMetaType \
 		../../Qt/5.13.1/wasm_32/include/QtWidgets/QLabel \
 		../../Qt/5.13.1/wasm_32/include/QtWidgets/qlabel.h \
 		../../Qt/5.13.1/wasm_32/include/QtWidgets/qframe.h \
@@ -886,12 +852,30 @@ main.o: main.cpp mainwindow.h \
 		../../Qt/5.13.1/wasm_32/include/QtGui/qtextoption.h \
 		../../Qt/5.13.1/wasm_32/include/QtWebSockets/QWebSocket \
 		../../Qt/5.13.1/wasm_32/include/QtWebSockets/qwebsocket.h \
+		../../Qt/5.13.1/wasm_32/include/QtCore/QUrl \
 		../../Qt/5.13.1/wasm_32/include/QtNetwork/QAbstractSocket \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qabstractsocket.h \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qtnetworkglobal.h \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qtnetwork-config.h \
 		../../Qt/5.13.1/wasm_32/include/QtNetwork/QNetworkRequest \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qnetworkrequest.h \
+		../../Qt/5.13.1/wasm_32/include/QtCore/QSharedDataPointer \
+		../../Qt/5.13.1/wasm_32/include/QtCore/QString \
+		../../Qt/5.13.1/wasm_32/include/QtCore/QVariant \
 		../../Qt/5.13.1/wasm_32/include/QtNetwork/QNetworkProxy \
 		../../Qt/5.13.1/wasm_32/include/QtNetwork/qnetworkproxy.h \
 		../../Qt/5.13.1/wasm_32/include/QtNetwork/qhostaddress.h \
 		../../Qt/5.13.1/wasm_32/include/QtNetwork/QSslError \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qsslerror.h \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qsslcertificate.h \
+		../../Qt/5.13.1/wasm_32/include/QtCore/qcryptographichash.h \
+		../../Qt/5.13.1/wasm_32/include/QtCore/qdatetime.h \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qssl.h \
+		../../Qt/5.13.1/wasm_32/include/QtCore/QFlags \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/QSslConfiguration \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qsslconfiguration.h \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qsslsocket.h \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qtcpsocket.h \
 		../../Qt/5.13.1/wasm_32/include/QtWebSockets/qwebsockets_global.h \
 		../../Qt/5.13.1/wasm_32/include/QtWebSockets/qwebsocketprotocol.h \
 		../../Qt/5.13.1/wasm_32/include/QtWidgets/QApplication \
@@ -1010,35 +994,9 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		../../Qt/5.13.1/wasm_32/include/QtGui/qtouchdevice.h \
 		../../Qt/5.13.1/wasm_32/include/QtWidgets/qtabwidget.h \
 		../../Qt/5.13.1/wasm_32/include/QtGui/qicon.h \
-		../../Qt/5.13.1/wasm_32/include/QtWidgets/QWidget \
 		../../Qt/5.13.1/wasm_32/include/QtWidgets/QPushButton \
 		../../Qt/5.13.1/wasm_32/include/QtWidgets/qpushbutton.h \
 		../../Qt/5.13.1/wasm_32/include/QtWidgets/qabstractbutton.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/QNetworkAccessManager \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qnetworkaccessmanager.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qtnetworkglobal.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qtnetwork-config.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qnetworkrequest.h \
-		../../Qt/5.13.1/wasm_32/include/QtCore/QSharedDataPointer \
-		../../Qt/5.13.1/wasm_32/include/QtCore/QString \
-		../../Qt/5.13.1/wasm_32/include/QtCore/QUrl \
-		../../Qt/5.13.1/wasm_32/include/QtCore/QVariant \
-		../../Qt/5.13.1/wasm_32/include/QtCore/QVector \
-		../../Qt/5.13.1/wasm_32/include/QtCore/QObject \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/QSslConfiguration \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qsslconfiguration.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qsslsocket.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qtcpsocket.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qabstractsocket.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qsslerror.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qsslcertificate.h \
-		../../Qt/5.13.1/wasm_32/include/QtCore/qcryptographichash.h \
-		../../Qt/5.13.1/wasm_32/include/QtCore/qdatetime.h \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qssl.h \
-		../../Qt/5.13.1/wasm_32/include/QtCore/QFlags \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/QSslPreSharedKeyAuthenticator \
-		../../Qt/5.13.1/wasm_32/include/QtNetwork/qsslpresharedkeyauthenticator.h \
-		../../Qt/5.13.1/wasm_32/include/QtCore/QMetaType \
 		../../Qt/5.13.1/wasm_32/include/QtWidgets/QLabel \
 		../../Qt/5.13.1/wasm_32/include/QtWidgets/qlabel.h \
 		../../Qt/5.13.1/wasm_32/include/QtWidgets/qframe.h \
@@ -1050,12 +1008,30 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		../../Qt/5.13.1/wasm_32/include/QtGui/qtextoption.h \
 		../../Qt/5.13.1/wasm_32/include/QtWebSockets/QWebSocket \
 		../../Qt/5.13.1/wasm_32/include/QtWebSockets/qwebsocket.h \
+		../../Qt/5.13.1/wasm_32/include/QtCore/QUrl \
 		../../Qt/5.13.1/wasm_32/include/QtNetwork/QAbstractSocket \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qabstractsocket.h \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qtnetworkglobal.h \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qtnetwork-config.h \
 		../../Qt/5.13.1/wasm_32/include/QtNetwork/QNetworkRequest \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qnetworkrequest.h \
+		../../Qt/5.13.1/wasm_32/include/QtCore/QSharedDataPointer \
+		../../Qt/5.13.1/wasm_32/include/QtCore/QString \
+		../../Qt/5.13.1/wasm_32/include/QtCore/QVariant \
 		../../Qt/5.13.1/wasm_32/include/QtNetwork/QNetworkProxy \
 		../../Qt/5.13.1/wasm_32/include/QtNetwork/qnetworkproxy.h \
 		../../Qt/5.13.1/wasm_32/include/QtNetwork/qhostaddress.h \
 		../../Qt/5.13.1/wasm_32/include/QtNetwork/QSslError \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qsslerror.h \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qsslcertificate.h \
+		../../Qt/5.13.1/wasm_32/include/QtCore/qcryptographichash.h \
+		../../Qt/5.13.1/wasm_32/include/QtCore/qdatetime.h \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qssl.h \
+		../../Qt/5.13.1/wasm_32/include/QtCore/QFlags \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/QSslConfiguration \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qsslconfiguration.h \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qsslsocket.h \
+		../../Qt/5.13.1/wasm_32/include/QtNetwork/qtcpsocket.h \
 		../../Qt/5.13.1/wasm_32/include/QtWebSockets/qwebsockets_global.h \
 		../../Qt/5.13.1/wasm_32/include/QtWebSockets/qwebsocketprotocol.h \
 		../../Qt/5.13.1/wasm_32/include/QtCore/QDebug \

@@ -3,15 +3,14 @@
 #include <QString>
 #include <QDir>
 #include <QFileDialog>
-#include <QObject>
 #include <QMetaEnum>
-#include <QNetworkAccessManager>
+
 
 MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     : QMainWindow(parent, flags)
 
 {
-    this->resize(500, 400);
+    this->resize(500, 260);
 
     /*
      * SEND MESSAGE
@@ -22,26 +21,18 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(m_websocket_connect_button, &QAbstractButton::released, this, &MainWindow::wsSendMsg );
 
     /*
-     * DISCONNECT WEBSOCKET & STOP TIMER
-     */
-
-    m_websocket_disconnect_button = new QPushButton("Disconnect (Stop Timer)", this);
-    m_websocket_disconnect_button->setGeometry((QRect(QPoint(30, 170), QSize(200, 50))));
-    connect(m_websocket_disconnect_button, SIGNAL(released()), this, SLOT(wsTimerDisconnect()) );
-
-    /*
      * UPLOAD FILE BUTTON
      */
 
     m_upload_file_btn = new QPushButton("Upload File", this);
-    m_upload_file_btn->setGeometry((QRect(QPoint(30, 240), QSize(200, 50))));
+    m_upload_file_btn->setGeometry((QRect(QPoint(30, 170), QSize(200, 50))));
     connect(m_upload_file_btn, SIGNAL(released()), this, SLOT(openFileBrowser()) );
 
     /*
      *  START TIMER
      */
 
-    m_start_timer_btn = new QPushButton("Start Timer", this);
+    m_start_timer_btn = new QPushButton("Start / Stop Timer", this);
     m_start_timer_btn->setGeometry(QRect(QPoint(30, 100), QSize(200, 50)));
     connect(m_start_timer_btn, &QAbstractButton::released, this, &MainWindow::wsStartTimer );
 
@@ -57,7 +48,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
      * TIMER MESSAGES
      */
 
-    m_timer_messages_lbl = new QLabel("Messages from server timer", this);
+    m_timer_messages_lbl = new QLabel("Messages from server", this);
     m_timer_messages_lbl->setGeometry(280, 110, 200, 30);
 
     /*
@@ -65,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
      */
 
     /* TIMER */
+
     connect(&m_ws_timer, &QWebSocket::connected, [] { qDebug() << "m_ws_timer connected() called";});
     connect(&m_ws_timer, &QWebSocket::disconnected, [] { qDebug() << "m_ws_timer disconnected() called";});
     connect(&m_ws_timer, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error), this, &MainWindow::wsTimerError);
@@ -87,9 +79,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(&m_ws_msg, &QWebSocket::connected, ws_opened);
 
     /* UPLOAD FILE */
+
     connect(&m_ws_uploadData, &QWebSocket::connected, []{ qDebug() << "m_ws_uploadData connected() called"; });
     connect(&m_ws_uploadData, &QWebSocket::disconnected, []{ qDebug() << "m_ws_uploadData closed() called"; });
-
 
 }
 
@@ -147,15 +139,6 @@ void MainWindow::wsSendMsg()
     m_ws_msg.open(ws_url);
 }
 
-
-void MainWindow::wsTimerDisconnect()
-{
-    qDebug() << "MainWindow::wsTimerDisconnect() called";
-
-    m_ws_timer.sendTextMessage("stopTimer");
-    m_ws_timer.close(QWebSocketProtocol::CloseCodeNormal,"Closed by User");
-    m_timer_messages_lbl->setText("Disconnected");
-}
 
 void MainWindow::wsTimerError(QAbstractSocket::SocketError error)
 {
