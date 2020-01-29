@@ -1,5 +1,27 @@
-import eventlet, random, os, cgi
+import eventlet, random, os
+from threading import Thread, Event, Timer
 from eventlet import wsgi, websocket, tpool, greenthread
+
+
+class WsTimer(Timer):
+
+    def __init__(self):
+        super().__init__(1, self.execute)
+		#self.thread = Timer(1, self.execute)
+		#self.stopped = event
+
+    """"
+    def run(self):
+		while not self.stopped.wait(0.5):
+			print("callback!")
+    """
+    def run(self):
+        while not self.finished.wait(self.interval):
+            self.execute()
+
+    def execute(self):
+        print("execute")
+
 
 
 def startTimer2(ws):
@@ -51,6 +73,7 @@ def saveData(ws):
 
 
 #standard server
+# Class erstellen
 def dispatch(environ, start_response):
 
     """
@@ -63,11 +86,14 @@ def dispatch(environ, start_response):
     elif environ['PATH_INFO'] == '/message':
         print('PATH_INFO == \'/message\'')
         #tpool.execute(process_message, environ, start_response)
+        ws_timer.wait()
         return processMessage(environ, start_response)
     elif environ['PATH_INFO'] == '/timer':
         print('PATH_INFO == \'/timer\'')
         #tpool.execute(startTimer, environ, start_response)
-        return stopTimer(environ, start_response)
+        ws_timer.start()	
+        #return stopTimer(environ, start_response)
+        return
 
         """
             STANDARD HTML ENDPOINTS
@@ -119,4 +145,7 @@ def dispatch(environ, start_response):
 if __name__ == '__main__':
     listener = eventlet.listen(('127.0.0.1', 7000))
     print('\nVisit http://localhost:7000/ in your websocket-capable browser.\n')
+    timer_event = Event()
+    ws_timer = WsTimer()
+    #ws_timer.start()
     wsgi.server(listener, dispatch)
