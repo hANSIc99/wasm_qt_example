@@ -2,13 +2,12 @@ import eventlet, random, os
 from threading import Thread, Event, Timer
 from eventlet import wsgi, websocket, tpool, greenthread
 
-
 class WsTimer(Timer):
 
-    def __init__(self):
+    def __init__(self, ws):
         super().__init__(1, self.execute)
-		#self.thread = Timer(1, self.execute)
-		#self.stopped = event
+        self.ws = ws
+        self.n_cnt = 0
 
     """"
     def run(self):
@@ -20,18 +19,19 @@ class WsTimer(Timer):
             self.execute()
 
     def execute(self):
-        print("execute")
+        try:
+            self.ws.send('Timer fired! {}'.format(self.n_cnt))
+        except Exception as e:
+            print('Client websocket not available')
+            self.ws.close()
 
 
+execTimer = True
 
-def startTimer2(ws):
-    n_cnt = 0
-    ws.send('Timer fired! {}'.format(n_cnt))
-
-#@websocket.WebSocketWSGI
+@websocket.WebSocketWSGI
 def startTimer(ws):
     n_cnt = 0
-    while True:
+    while execTimer:
         print('Timer fired! {}'.format(n_cnt))
 
         greenthread.sleep(2)
@@ -46,7 +46,6 @@ def startTimer(ws):
 
 @websocket.WebSocketWSGI
 def stopTimer(ws):
-    startTimer(ws)
     m = ws.wait()
     if m is None:
         print("None received")
@@ -55,6 +54,7 @@ def stopTimer(ws):
 
 @websocket.WebSocketWSGI
 def processMessage(ws):
+    execTimer = False
     m = ws.wait()
     print('Message received: {}'.format(m))
 
@@ -72,8 +72,7 @@ def saveData(ws):
         file.write(data)
 
 
-#standard server
-# Class erstellen
+
 def dispatch(environ, start_response):
 
     """
@@ -85,15 +84,11 @@ def dispatch(environ, start_response):
         return saveData(environ, start_response)
     elif environ['PATH_INFO'] == '/message':
         print('PATH_INFO == \'/message\'')
-        #tpool.execute(process_message, environ, start_response)
-        ws_timer.wait()
-        return processMessage(environ, start_response)
+        execTimer = False
+        return tpool.execute(processMessage, environ, start_response)
     elif environ['PATH_INFO'] == '/timer':
         print('PATH_INFO == \'/timer\'')
-        #tpool.execute(startTimer, environ, start_response)
-        ws_timer.start()	
-        #return stopTimer(environ, start_response)
-        return
+        return tpool.execute(startTimer, environ, start_response)
 
         """
             STANDARD HTML ENDPOINTS
@@ -145,7 +140,4 @@ def dispatch(environ, start_response):
 if __name__ == '__main__':
     listener = eventlet.listen(('127.0.0.1', 7000))
     print('\nVisit http://localhost:7000/ in your websocket-capable browser.\n')
-    timer_event = Event()
-    ws_timer = WsTimer()
-    #ws_timer.start()
     wsgi.server(listener, dispatch)
